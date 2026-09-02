@@ -1,0 +1,29 @@
+[
+{
+    "model": "registry.aircraftdetail",
+    "pk": "60360454-8e45-464b-b970-41ad8e9ad88f",
+    "fields": {
+        "aircraft": "dcc5682c-2540-40d0-91e8-b65f9498387c",
+        "mass": 35,
+        "sub_category": 10,
+        "max_certified_takeoff_weight": "13.350",
+        "max_height_attainable": "112.850",
+        "is_registered": true,
+        "max_endurance": "17.83",
+        "max_range": "99.91",
+        "max_speed": "6.79",
+        "dimension_length": "41.98",
+        "dimension_breadth": "106.82",
+        "dimension_height": "6.89",
+        "icao_aircraft_type_designator": "8872",
+        "registration_mark": "7076714374",
+        "commission_date": "2021-10-24T13:05:35.855Z",
+        "operating_frequency": "172.59",
+        "manufactured_at": "2021-10-24T13:05:35.855Z",
+        "type_certificate": "57c924dc-dbb2-481c-9105-4f3ca0d3f8eb",
+        "identification_photo": "http://ritter-patel.com/home.asp",
+        "created_at": "2021-10-24T13:05:35.858Z",
+        "updated_at": "2021-10-24T13:05:35.858Z"
+    }
+}
+]

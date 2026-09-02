@@ -14,13 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls import url
 from . import views as pki_views
 from django.urls import path
 
 urlpatterns = [
     
-    path('credentials/', pki_views.CredentialsList.as_view()),
-    path('credentials/<uuid:pk>', pki_views.CredentialsDetail.as_view()),    
+    path('credentials/', pki_views.CredentialsList.as_view(), name='pki-credentials-list'),
+    path('credentials/<uuid:pk>', pki_views.CredentialsDetail.as_view(), name='pki-credentials-detail'),
+    path('auth_server_fullchain', pki_views.AuthServerFullChain.as_view(), name='auth-server-full-chain'),
     
 ]

@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
 import django_heroku
 from pathlib import Path
 import os
+import moneyed
+import sys
 from os import environ as env
 from dotenv import load_dotenv, find_dotenv
 
@@ -21,18 +22,15 @@ load_dotenv(find_dotenv())
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.get('DJANGO_SECRET')
-
+SECRET_KEY = env.get('DJANGO_SECRET','ivAfmV07bHG4fCVipUexmE3zf7pZmyUBQxXqbDKTeoGzeVxCPovOGweef4tAZReTgVZPhdH6P3Fkcc7iXz3YD8uNymusbnUSXMtFZaDE1imJTKCr2IkqNYazrwI6S3R97pQ5sDJoMuL7d9W9JvRQ5jOBaf24H8gxtZUbuSdWK9kqq7yBgDGkuJQEICG2BPwdjTD21rxZ1hiROn4fUakqJzdL4mkuucQ7C1OYVksR5yfsJ9lAmpy9rVOb3hfcEPKC')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -51,7 +49,8 @@ INSTALLED_APPS = [
     'jetway',
     'launchpad',
     'pki_framework',
-    'crispy_forms',    
+    'supply_chain_operations',
+    'crispy_forms',
     "crispy_bootstrap5",
     "simple_history"
 ]
@@ -123,15 +122,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SECURE_API_ENDPOINTS = True
+SECURE_API_ENDPOINTS = False
+
+# if DEBUG:
+#     BROKER_URL = os.getenv("REDIS_URL",'redis://localhost:6379/')
+# else:
+#     BROKER_URL = os.getenv("REDIS_URL","redis://redis:6379/")
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+
+# CELERY_RESULT_BACKEND = BROKER_URL
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'jetway.pagination.StandardResultsSetPagination',
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
-
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    'DATETIME_FORMAT': "%d-%b-%Y %H:%M:%S",
+    'DEFAULT_AUTHENTICATION_CLASSES': (             
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
@@ -140,7 +149,6 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
     )
 }
-
 
 
 JWT_AUTH = {
@@ -168,9 +176,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-SIMPLE_HISTORY_REVERT_DISABLED=True
+SIMPLE_HISTORY_REVERT_DISABLED = True
 
-CRYPTOGRAPHY_SALT=env.get("CRYPTOGRAPHY_SALT","__SET_AS_A_VERY_STRONG_PASSWORD__")
+CRYPTOGRAPHY_SALT = env.get(
+    "CRYPTOGRAPHY_SALT", "__SET_AS_A_VERY_STRONG_PASSWORD__")
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
@@ -178,5 +187,42 @@ STATIC_URL = '/static/'
 
 # Directory path to look for data fixture to load data into database before running tests
 FIXTURE_DIRS = [os.getcwd() + '/tests/fixtures/']
+
+
+# Currencies available for use
+CURRENCIES = env.get(
+    'ALLOWED_CURRENCY',
+    [
+        'AUD', 'CAD', 'EUR', 'GBP', 'JPY', 'NZD', 'USD','INR',
+    ],
+)
+
+# Check that each provided currency is supported
+for currency in CURRENCIES:
+    if currency not in moneyed.CURRENCIES:  # pragma: no cover
+        print(f"Currency code '{currency}' is not supported")
+        sys.exit(1)
+        
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+    }, 'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        }, 'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+
+    }, 
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
 
 django_heroku.settings(locals())

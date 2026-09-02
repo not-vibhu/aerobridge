@@ -1,0 +1,67 @@
+{% extends "launchpad/layout.html" %} 
+{% load rest_framework %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Aircraft
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Aircraft Component Details
+      </li>
+    </ol>
+  </nav>
+  <div class="alert alert-primary" role="alert">
+    <span class="bi bi-bell-fill"></span> You are in the blueprints section of Aerobridge, make sure you read the instructions before proceeding. Changes here may cause disruptions in your manufacturing operations. 
+  </div>
+<div>
+<h2>Component Detail</h2>
+
+<br>
+<div class="row">
+  <div class="col-8">
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tr>
+        <td>Master Component</td>
+        <td><i class="bi bi-motherboard"></i>&nbsp;<a href="/launchpad/aircraft-master-components/{%if aircraft_component.master_component %}{{aircraft_component.master_component.id }}{% else %}{{aircraft_component.supplier_part.manufacturer_part.master_component.id }}{%endif%}/detail">{{aircraft_component.component_common_name}}</a></td>
+    </tr>
+    <tr>
+        <td><span data-bs-toggle="tooltip" title="Aerobridge ID is a unique global identifier for this component assigned at the time custody is acknowledged.">Aerobridge ID&nbsp;&nbsp;<i class="bi bi-question-circle-fill"></i></span></td>
+        <td><code>{{ aircraft_component.aerobridge_id }}</code></td>
+    </tr>
+    <tr>
+        <td>History&nbsp;&nbsp;</td>
+        <td><a href="/launchpad/aircraft-components/{{ aircraft_component.aerobridge_id }}/history"><i class="bi bi-clock-history"></i> Component History</a></td>
+    </tr>
+    <tr>
+        <td>Status</td>
+        <td>          
+          <button type="button" class="btn {% if aircraft_component.status == 10 %}btn-outline-success{% else %}btn-outline-warning{% endif %}" disabled>{{aircraft_component.get_status_display}}</button>
+          </td>    
+    </tr>
+    
+</table>
+
+<p class="text-muted">Updated at {{ aircraft_component.updated_at}}</p>
+<br>
+<p><a class="btn btn-primary" href="/launchpad/aircraft-components/{{aircraft_component.id}}"><b>Update Details</b></a>&nbsp;&nbsp;{% if aircraft_component.status != 10 and component_in_assembly %}<a href="/launchpad/aircraft-components/{{aircraft_component.id}}/remove" class="btn btn-danger">Remove from Assembly</a>{% endif %}</p>
+
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block footer_javascript %}
+
+  <script type="text/javascript">
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));  
+  </script>
+{% endblock %}

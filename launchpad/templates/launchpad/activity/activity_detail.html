@@ -1,0 +1,30 @@
+{% extends "launchpad/layout.html" %} 
+{% load rest_framework %}
+{% block content %}
+<div>
+<h2>Activity Details</h2>
+<br>
+
+<table  class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tr>
+        <td>Name</td>
+        <td>{{ activity.name }}</td>
+    </tr>
+    <tr>
+        <td>Type</td>
+        <td>{{ activity.get_activity_type_display }}</td>    
+    </tr>
+   
+</table>
+<p class="text-muted">Created At - {{ activity.updated_at|date:'Y-m-d H:i' }}</p>
+<br>
+<p><a class="btn btn-primary" href="/launchpad/activities/{{activity.id}}"><b>Update Details</b></a></p>
+
+</div>
+{% endblock %}

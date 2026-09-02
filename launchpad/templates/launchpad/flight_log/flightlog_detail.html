@@ -1,0 +1,51 @@
+{% extends "launchpad/layout.html" %} 
+{% load rest_framework %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Trusted Flights
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+       Flight Logs
+      </li>
+    </ol>
+  </nav>
+<div class="row mb-3">
+<h2>Flight Log Details</h2>
+
+</div>
+<div class="row mb-3">
+    
+    <table  class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr>
+            <td>Operation</td>
+            <td><a href="/launchpad/flightoperations/{{ flightlog.operation.id }}/detail">{{ flightlog.operation.name }}</a></td>
+        </tr>
+        <tr>
+            <td>Raw Log</td>
+            <td><code class="text-break">{{ flightlog.raw_log}}</code></td>    
+        </tr>
+      
+        
+    </table>
+    
+    <p class="text-muted">Last Updated at {{flightlog.updated_at|date:'Y-m-d H:i' }} </p>
+    <br>
+    {% if flightlog.is_editable %}
+    <p><a class="btn btn-primary" href="/launchpad/flightlogs/{{flightlog.id}}"><b>Update Details</b></a></p>
+    {% else %}
+    
+    <p class='text-muted'>This flight log has been signed and cannot be edited, create a new plan, operation and re-upload a log to update it.</p>
+    {% endif %}
+    
+
+
+</div>
+{% endblock %}

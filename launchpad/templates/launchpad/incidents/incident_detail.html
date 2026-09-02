@@ -1,0 +1,64 @@
+{% extends "launchpad/layout.html" %} 
+{% block navbreadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Operations
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Incidents
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+{% load rest_framework %}
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-md-8 themed-grid-col">
+<h1>Incident Detail</h1>
+<br>
+
+<table  class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    
+    <tr>
+        <td>Impacted Aircraft</td>
+        <td><a href="/launchpad/aircrafts/{{ incident.aircraft.id}}/detail">{{ incident.aircraft}}</a</td>    
+    </tr>
+    <tr>
+        <td>Component Status </td>
+        <td>
+            <button type="button" class="btn {% if incident.new_status == 10 %}btn-outline-success{% else %}btn-outline-warning{% endif %}" disabled>{{ incident.get_new_status_display}}</button>
+            
+            </td>
+    </tr>
+    <tr>
+        <td>Notes </td>
+        <td>{{ incident.notes}}</a></td>
+    </tr>
+    <tr>
+        <td>Impacted Components</td>
+       
+        <td>
+            <ul class="list-group list-group-flush">
+            {% for component in incident.impacted_components.all %}
+                <li class="list-group-item"><a href="/launchpad/aircraft-components/{{component.id}}/detail">{{ component }}</a></li>
+            {% endfor %}
+            </ul>
+        </td>
+    </tr>    
+</table>
+<small class="text-muted">Created at {{ incident.created_at }} </small>
+<br><br>
+
+<p><a class="btn btn-primary" href="/launchpad/incidents/{{incident.id}}"><b>Update Details</b></a></p>
+
+    </div>
+    </div>
+{% endblock %}

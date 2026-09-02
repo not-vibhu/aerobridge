@@ -1,0 +1,50 @@
+{% extends "launchpad/layout.html" %} 
+{% load rest_framework %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Operations
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Pilots
+      </li>
+    </ol>
+  </nav>
+
+<h2>Pilot Details</h2>
+<br>
+<p><img src="{{pilot.photo}}" class="thumbnail"></p>
+<br>
+<table  class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tr>
+        <td>Company</td>
+        <td>{{ pilot.operator.company_name }}</td>    
+    </tr>
+    <tr>
+        <td>Photo URL</td>
+        <td>{{ pilot.identification_photo }}</td>
+    </tr>
+    <tr>
+        <td>Full Name</td>
+        <td><b>{{pilot.person.first_name}} {{pilot.person.last_name}}</b></td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>{{pilot.address.address_line_1}}, {{pilot.address.city}}</td>
+    </tr>
+    
+</table>
+<br>
+<p><a class="btn btn-primary" href="/launchpad/pilots/{{pilot.id}}"><b>Update Details</b></a></p>
+
+
+{% endblock %}

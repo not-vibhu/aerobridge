@@ -1,7 +1,14 @@
-body {
-  padding-bottom: 20px;
-}
 
 .navbar {
   margin-bottom: 20px;
 }
+
+ul.error li {
+  list-style-type: none;
+}
+
+.map {
+  height: 400px;
+}
+
+.thumbnail  { min-height:150px; height:150px; } 

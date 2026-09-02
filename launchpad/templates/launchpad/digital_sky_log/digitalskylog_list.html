@@ -1,0 +1,27 @@
+{% extends "launchpad/layout.html" %} 
+{% block content %}
+
+<div class="row mb-3">
+    
+    <h2>Digital Sky Logs list</h2>
+    <p>See the logs of all your Digital Sky interactions, the newest is at the top. Logs and server responses are created and automatically assigned by Aerobridge, you cannot change or edit transaction logs.</p>
+</div>
+<div class="row mb-3">
+    <div class="col-md-8 themed-grid-col">
+
+    <ul class="list-group list-group-flush">
+        {% if digitalskylogs %}
+            {% for digitalskylog in digitalskylogs %}
+            <li class="list-group-item"><a href="/launchpad/digitalsky-logs/{{digitalskylog.id}}">{{ digitalskylog.txn.aircraft.model }} {{ digitalskylog.txn.aircraft.operator.company_name }}</a>&nbsp;&nbsp;<mark>{{digitalskylog.txn.prefix }}</mark>&nbsp;&nbsp;<small class="text-muted">&mdash; Created at {{ digitalskylog.created_at|date:'Y-m-d H:i' }} </small></li>
+            {% endfor %}
+        {% else %}
+        <li class="list-group-item"><p class="text-muted"><i>There are no Digital Sky Logs added in Aerobridge, once added the list of Digital Sky Logs will be displayed here.</i></p></li>
+    {% endif %}
+
+    </ul>
+    <br>
+    
+</div>
+<div class="col-md-4 themed-grid-col"></div>
+</div>
+{% endblock %}

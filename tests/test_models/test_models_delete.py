@@ -1,22 +1,29 @@
 from digitalsky_provider.models import DigitalSkyLog
-from gcs_operations.models import FlightPlan, FlightOperation, Transaction, FlightPermission, FlightLog
+from gcs_operations.models import CloudFile, FlightPlan, FlightOperation, Transaction, FlightPermission, FlightLog, \
+    SignedFlightLog
 from pki_framework.models import AerobridgeCredential
 from registry.models import Person, Address, Activity, Authorization, Operator, Contact, Test, TypeCertificate, \
-    Manufacturer, Engine, Firmware, Pilot, TestValidity, Aircraft
+    Manufacturer, Firmware, Pilot, TestValidity, Aircraft, AircraftDetail, AircraftComponent
 from .test_setup import TestModels
 
 
 class TestModelsDelete(TestModels):
-    fixtures = ['Activity', 'Address', 'Authorization', 'Engine', 'Manufacturer', 'Operator', 'Person', 'Test',
-                'TypeCertificate', 'Pilot', 'FlightPlan', 'FlightOperation', 'Aircraft', 'Transaction',
-                'Contact', 'DigitalSkyLog', 'Firmware', 'FlightLog', 'FlightPermission',
-                'TestValidity', 'AerobridgeCredential']
+    fixtures = ['Activity', 'Address', 'Authorization', 'Manufacturer', 'Operator', 'Person', 'Test',
+                'TypeCertificate', 'Pilot', 'CloudFile', 'FlightPlan', 'FlightOperation', 'Aircraft', 'Transaction',
+                'Contact', 'DigitalSkyLog', 'Firmware', 'FlightLog', 'FlightPermission', 'TestValidity',
+                'AerobridgeCredential', 'SignedFlightLog', 'AircraftDetail', 'AircraftComponent']
 
     def test_digitalsky_provider_digitalsky_log_delete(self):
         digitalsky_log = DigitalSkyLog.objects.first()
         self.assertIsNotNone(digitalsky_log)
         digitalsky_log.delete()
         self.assertNotIn(digitalsky_log, DigitalSkyLog.objects.all())
+
+    def test_gcs_operations_cloud_file_delete(self):
+        cloud_file = CloudFile.objects.first()
+        self.assertIsNotNone(cloud_file)
+        cloud_file.delete()
+        self.assertNotIn(cloud_file, CloudFile.objects.all())
 
     def test_gcs_operations_flight_plan_delete(self):
         flight_plan = FlightPlan.objects.first()
@@ -47,6 +54,12 @@ class TestModelsDelete(TestModels):
         self.assertIsNotNone(flight_log)
         flight_log.delete()
         self.assertNotIn(flight_log, FlightLog.objects.all())
+
+    def test_gcs_operations_signed_flight_log_delete(self):
+        signed_flight_log = SignedFlightLog.objects.first()
+        self.assertIsNotNone(signed_flight_log)
+        signed_flight_log.delete()
+        self.assertNotIn(signed_flight_log, SignedFlightLog.objects.all())
 
     def test_registry_person_delete(self):
         person = Person.objects.first()
@@ -114,12 +127,6 @@ class TestModelsDelete(TestModels):
         manufacturer.delete()
         self.assertNotIn(manufacturer, Manufacturer.objects.all())
 
-    def test_registry_engine_delete(self):
-        engine = Engine.objects.first()
-        self.assertIsNotNone(engine)
-        engine.delete()
-        self.assertNotIn(engine, Engine.objects.all())
-
     def test_registry_firmware_delete(self):
         firmware = Firmware.objects.first()
         self.assertIsNotNone(firmware)
@@ -131,6 +138,18 @@ class TestModelsDelete(TestModels):
         self.assertIsNotNone(aircraft)
         aircraft.delete()
         self.assertNotIn(aircraft, Aircraft.objects.all())
+
+    def test_registry_aircraft_detail_delete(self):
+        aircraft_detail = AircraftDetail.objects.first()
+        self.assertIsNotNone(aircraft_detail)
+        aircraft_detail.delete()
+        self.assertNotIn(aircraft_detail, AircraftDetail.objects.all())
+
+    def test_registry_aircraft_component_delete(self):
+        aircraft_component = AircraftComponent.objects.first()
+        self.assertIsNotNone(aircraft_component)
+        aircraft_component.delete()
+        self.assertNotIn(aircraft_component, AircraftComponent.objects.all())
 
     def test_pki_framework_aerobridge_credentials_delete(self):
         aerobridge_credentials = AerobridgeCredential.objects.first()

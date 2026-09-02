@@ -1,0 +1,68 @@
+{% extends "launchpad/layout.html" %} 
+{% load rest_framework %}
+{% block navbreadcrumb %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Manufacturing
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Create Aircraft Assembly
+      </li>
+    </ol>
+  </nav>
+  
+
+{% endblock %}
+{% block content %}
+
+<div class="alert alert-primary" role="alert">
+    <span class="bi bi-bell-fill"></span> You are in the blueprints section of Aerobridge, make sure you read the instructions before proceeding. Changes here may cause disruptions in your manufacturing operations. 
+  </div>
+{% load crispy_forms_tags %}
+<div class="row mb-3">
+    <div class="col-md-6 themed-grid-col">
+        <h2>Add Aircraft Assembly</h2>
+        <p>Start a assembly process for a drone, <a href="/launchpad/aircraft-components/available">assign available components</a> to add to the assembly or register new ones <a href="/launchpad/aircraft-components">here</a></p>
+        <br>
+        <form action="" method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% crispy form %}       
+        
+        </form>
+</div>
+<div class="col-md-6 themed-grid-col">
+    <h2>Assembly Blueprint</h2>
+               
+    <p>Below is a list of components that need to be added to complete the assembly:</p>    
+    
+    <ul class="list-group list-group-flush">
+            {% for aircraft_master_component in aircraft_model.master_components.all %}     
+         
+                <li class="list-group-item"><i class="bi bi-motherboard"></i>&nbsp;<a href="/launchpad/aircraft-master-components/{{aircraft_master_component.id}}/detail">{{ aircraft_master_component.name }}</a>{% if aircraft_master_component.assembly %}<small class="text-muted">&nbsp;&nbsp;Part of a sub-assembly</small>{% endif %}&nbsp;&nbsp;{% if aircraft_master_component.id|stringformat:"s" in submitted_components %} <span class="bi bi-check-circle-fill"></span> {% else %}  <span class="bi bi-exclamation-triangle-fill"></span> {% endif %}&nbsp;&nbsp;<mark>{{ aircraft_master_component.get_family_display }}</mark></li>
+            {% endfor %}
+    </ul>
+    <p>&nbsp;</p>
+    <div class="hstack gap-3">
+        <div class="bg-light border">&nbsp;<span class="bi bi-exclamation-triangle-fill"></span> Unavailable / missing&nbsp;</div>
+        <div class="bg-light border">&nbsp;<span class="bi bi-check-circle-fill"></span> OK&nbsp;</div>
+    </div>
+</div>
+</div>
+{% endblock %}

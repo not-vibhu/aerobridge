@@ -1,8 +1,13 @@
 from rest_framework import serializers
 
-from digitalsky_provider.models import Transaction
-from registry.models import Authorization, Operator, Contact, Aircraft, Pilot, Address, Person, Test, \
-    TypeCertificate, Manufacturer, TestValidity
+from registry.models import Activity, Authorization, Operator, Contact, Aircraft, Pilot, Address, Person, Test, \
+    TypeCertificate, Company, TestValidity, AircraftDetail, AircraftComponent
+
+
+class AircraftComponentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AircraftComponent
+        fields = '__all__'
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -16,7 +21,7 @@ class ManufacturerSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
 
     class Meta:
-        model = Manufacturer
+        model = Company
         fields = ('id', 'full_name', 'common_name', 'address', 'role')
 
 
@@ -99,7 +104,7 @@ class PrivilegedOperatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Operator
-        fields = ('id', 'company_name', 'country', 'website', 'email', 'operator_type', 'address',
+        fields = ('id', 'company', 'country', 'website', 'email', 'operator_type', 'address',
                   'operational_authorizations', 'authorized_activities', 'created_at', 'updated_at')
 
 
@@ -169,9 +174,11 @@ class OperatorSelectRelatedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Operator
-        fields = ('id', 'company_name', 'country', 'website', 'email', 'operator_type', 'address',
-                  'operational_authorizations', 'authorized_activities', 'contacts', 'phone_number', 'company_number',
-                  'country', 'pilots', 'aircrafts', 'created_at', 'updated_at')
+        fields = (
+            'id', 'company', 'country', 'website', 'email', 'operator_type', 'address',
+            'operational_authorizations',
+            'authorized_activities', 'contacts', 'phone_number', 'company_number', 'country', 'pilots', 'aircrafts',
+            'created_at', 'updated_at')
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -192,33 +199,7 @@ class ContactDetailSerializer(serializers.ModelSerializer):
 class PilotSerializer(serializers.ModelSerializer):
     ''' This is the default serializer for Operator '''
     tests = serializers.SerializerMethodField()
-
-    def get_tests(self, response):
-        p = Pilot.objects.get(id=response.id)
-        tests_validity = TestValidity.objects.filter(pilot=p)
-        all_tests = []
-        for cur_test_validity in tests_validity:
-            test_serializer = TestsSerializer(cur_test_validity.test)
-            all_tests.append({'expiration': cur_test_validity.expiration, 'test_details': test_serializer.data})
-        return all_tests
-
-    class Meta:
-        model = Pilot
-        fields = ('id', 'operator', 'person', 'photo', 'photo_small', 'address', 'identification_photo',
-                  'identification_photo_small', 'tests')
-
-
-class TestsValiditySerializer(serializers.ModelSerializer):
-    tests = TestsSerializer(read_only=True, many=True)
-    pilot = PilotSerializer(read_only=True)
-
-    class Meta:
-        model = TestValidity
-        fields = ('id', 'tests', 'pilot', 'taken_at', 'expiration')
-
-
-class PilotDetailSerializer(serializers.ModelSerializer):
-    tests = serializers.SerializerMethodField()
+    address = AddressSerializer(read_only=True)
     person = PersonSerializer(read_only=True)
 
     def get_tests(self, response):
@@ -232,58 +213,39 @@ class PilotDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pilot
-        fields = ('id', 'operator', 'person', 'photo', 'photo_small', 'address', 'person', 'is_active',
-                  'identification_photo', 'identification_photo_small', 'tests')
+        fields = ('id', 'operator', 'person', 'photo', 'address', 'is_active','tests',)
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = '__all__'
+
+
+class TestsValiditySerializer(serializers.ModelSerializer):
+    tests = TestsSerializer(read_only=True, many=True)
+    pilot = PilotSerializer(read_only=True)
+
+    class Meta:
+        model = TestValidity
+        fields = ('id', 'tests', 'pilot', 'taken_at', 'expiration')
+
+
+class AircraftFullSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Aircraft
+        fields = '__all__'
 
 
 class AircraftSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aircraft
-        fields = ('id', 'operator', 'mass', 'manufacturer', 'model', 'manufacturer', 'status', 'registration_mark',
-                  'category', 'created_at', 'popular_name', 'manufacturer', 'registration_mark', 'sub_category',
-                  "flight_controller_number", "photo", "photo_small", 'max_certified_takeoff_weight', 'updated_at',
-                  'photo_small', 'photo')
-
-
-class AircraftSigningSerializer(serializers.ModelSerializer):
-    droneTypeId = serializers.SerializerMethodField()
-    version = serializers.SerializerMethodField()
-    deviceId = serializers.SerializerMethodField()
-    deviceModelId = serializers.SerializerMethodField()
-    operatorBusinessIdentifier = serializers.SerializerMethodField()
-    txn = serializers.SerializerMethodField()
-
-    def get_txn(self, response):
-        drone = Aircraft.objects.get(id=response.id)
-        t, created = Transaction.objects.get_or_create(aircraft_id=drone.id, prefix="tsc_signing")
-        return t.id
-
-    def get_droneTypeId(self, response):
-        a = Aircraft.objects.get(id=response.id)
-        return a.sub_category
-
-    def get_version(self, response):
-        a = Aircraft.objects.get(id=response.id)
-        return a.model
-
-    def get_deviceId(self, response):
-        a = Aircraft.objects.get(id=response.id)
-        return a.esn
-
-    def get_deviceModelId(self, response):
-        a = Aircraft.objects.get(id=response.id)
-        return a.maci_number
-
-    def get_operatorBusinessIdentifier(self, response):
-        a = Aircraft.objects.get(id=response.id)
-        return a.operator.id
-
-    class Meta:
-        model = Aircraft
-        fields = ('droneTypeId', 'version', 'deviceId', 'deviceModelId', 'txn', 'operatorBusinessIdentifier')
+        fields = ('id', 'operator', 'manufacturer', 'name', 'status',
+                  'final_assembly', "photo",
+                  "flight_controller_id")
 
 
 class AircraftDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Aircraft
-        exclude = ('is_registered',)
+        model = AircraftDetail
+        fields = '__all__'

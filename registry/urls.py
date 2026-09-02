@@ -13,3 +13,30 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from . import views as registryviews
+from django.urls import path
+
+urlpatterns = [
+
+    path('pilots/', registryviews.PilotList.as_view(), name='pilot-list'),
+    path('pilots/<uuid:pk>', registryviews.PilotDetail.as_view(), name='pilot-detail'),
+
+    path('activities/', registryviews.ActivityList.as_view(), name='activity-list'),
+    path('activities/<uuid:pk>', registryviews.ActivityDetail.as_view(), name='activity-detail'),
+
+    path('aircraft/', registryviews.AircraftList.as_view(), name='aircraft-list'),
+    path('aircraft/<uuid:pk>', registryviews.AircraftDetail.as_view(), name='aircraft-detail'),
+    path('aircraft/rfm/<str:flight_controller_id>', registryviews.AircraftRFMDetail.as_view(),
+         name='aircraft-rfm-detail'),
+    path('aircraft/firmware/<str:flight_controller_id>', registryviews.AircraftFirmwareDetail.as_view(),
+         name='aircraft-firmware-detail'),
+    path('aircraft-component/verify/<str:aerobridge_id>', registryviews.VerifyAerobridgeID.as_view(),
+         name='verify-aerobridge-id'),
+         
+    path('operators/', registryviews.OperatorList.as_view(), name='operator-list'),
+    path('operators/<uuid:pk>', registryviews.OperatorDetail.as_view(), name='operator-detail'),
+    path('manufacturers/', registryviews.ManufacturerList.as_view(), name='manufacturer-list'),
+    path('manufacturers/<uuid:pk>', registryviews.ManufacturerDetail.as_view(), name='manufacturer-detail'),
+
+]

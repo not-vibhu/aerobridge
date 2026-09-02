@@ -1,0 +1,81 @@
+{% extends "launchpad/layout.html" %}
+{% block navbreadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Trusted Flights
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Permissions
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+{% block content %}
+
+<div class="row mb-3">
+  <div class="col-md-8 themed-grid-col">
+    <h2>Flight Permissions</h2>
+    <p>See all the flight permission objects, if you do not see a permission for your operation, go to the operation detail and generate a permission.</p>
+  </div>
+  <div class="col-md-4 themed-grid-col"></div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-8 themed-grid-col">
+
+        <ul class="list-group list-group-flush list-group-numbered">
+
+         {% if flightpermissions.results %}
+            {% for flightpermission in flightpermissions.results %}
+            <li class="list-group-item">Permission
+              for <a href="/launchpad/flightpermissions/{{flightpermission.id}}/detail">{{ flightpermission.operation.name }}</a></li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item"><p class="text-muted"><i>There are no flight permissions added in Aerobridge, once added the list of flight permissions will be displayed here.</i></p></li>
+        {% endif %}
+
+
+        </ul>
+        <br><br>
+        
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+              {% if flightpermissions.links.previous %}
+              
+              <li class="page-item">
+                <a class="page-link" href="{{ flightpermissions.links.previous }}">Previous</a>
+              </li>  
+                
+              {% else %}
+                <li class="page-item disabled">
+                  <a class="page-link">Previous</a>
+                </li>
+              {% endif %}
+              &nbsp;&nbsp;
+              {% if flightpermissions.pages %}  
+              <li class="page-item" aria-current="page">
+                
+                <small>Page  {{flightpermissions.page}} of {{ flightpermissions.pages }} </small>
+              </li>        
+                  <small></small>
+              {% endif %}
+              &nbsp;&nbsp;
+              {% if flightpermissions.links.next %}   
+              <li class="page-item">
+                <a class="page-link" href="{{ flightpermissions.links.next }}">Next</a>
+              </li>         
+              
+              {% else %}
+              <li class="page-item disabled">
+                <a class="page-link">Next</a>
+              </li>
+              {% endif %}
+          </ul>
+        </nav>
+        <br><br>
+
+    </div>
+    <div class="col-md-4 themed-grid-col"></div>
+</div>
+
+{% endblock %}

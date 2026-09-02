@@ -15,24 +15,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from rest_framework.urlpatterns import format_suffix_patterns
 
-from django.urls import path,re_path
+
+
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework.routers import DefaultRouter
 import jetway.views as jetwayviews
 
 urlpatterns = [
     
-    path('ping/', jetwayviews.PingView.as_view()),
+    path('ping/', jetwayviews.PingView.as_view(), name="ping"),
     path('', jetwayviews.HomeView.as_view()),
     path('admin/', admin.site.urls),
 
-    path('digitalsky/', include('digitalsky_provider.urls')),
     path('launchpad/', include('launchpad.urls')),
     path('pki/', include('pki_framework.urls')),
+    path('gcs/', include('gcs_operations.urls')),
+    path('registry/', include('registry.urls')),
     # YOUR PATTERNS
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+# + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # urlpatterns = format_suffix_patterns(urlpatterns)

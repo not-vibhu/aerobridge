@@ -35,6 +35,7 @@ def jwt_decode_token(token):
     audience = env.get('PASSPORT_AUDIENCE')
     
     decoded = jwt.decode(token, public_key, audience=audience, issuer=issuer, algorithms=['RS256'])
+    
     return decoded
 
 
@@ -63,7 +64,8 @@ def requires_scopes(required_scopes):
                 
                 jsonurl = req.urlopen(PASSPORT_DOMAIN)
                 
-                jwks = json.loads(jsonurl.read())   
+                jwks = json.loads(jsonurl.read())  
+                
                 # cert = '-----BEGIN CERTIFICATE-----\n' + \
                     # jwks['keys'][0]['x5c'][0] + '\n-----END CERTIFICATE-----'
                 # certificate = load_pem_x509_certificate(cert.encode('utf-8'), default_backend())
@@ -72,9 +74,17 @@ def requires_scopes(required_scopes):
                 for jwk in jwks['keys']:
                     kid = jwk['kid']
                     public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
-                
+
                 kid = jwt.get_unverified_header(token)['kid']
-                public_key = public_keys[kid]
+                try:
+                    public_key = public_keys[kid]
+                except Exception as e: 
+                    
+                    response = JsonResponse({'detail': 'Incorrect Bearer token provided, please get a new one and try again'})
+                    response.status_code = 401
+                    return response
+
+                
                 try:
                     decoded = jwt.decode(token, public_key, audience=API_IDENTIFIER, algorithms=['RS256'])
                     

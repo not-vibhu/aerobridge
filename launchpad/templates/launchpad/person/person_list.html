@@ -1,0 +1,43 @@
+{% extends "launchpad/layout.html" %}
+{% block navbreadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Operations
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        People
+      </li>
+    </ol>
+</nav>
+
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+
+    <h2>People</h2>
+    <p>A list of everyone (Pilots / Contacts) on the server, click to see / change details of an individual person,
+        people can be assigned to Operators, Manufacturers, Tokens.</p>
+</div>
+<div class="row mb-3">
+    <div class="col-md-6 themed-grid-col">  
+        <ul class="list-group list-group-flush list-group-numbered">
+            {% if people %}
+                {% for person in people %}
+                <li class="list-group-item"><a href="/launchpad/people/{{person.id}}/detail">{{ person.first_name }}
+                        {{ person.last_name }}</a>&nbsp;&nbsp;<small class="text-muted">
+                    </small></li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item"><p class="text-muted"><i>There are no people added in Aerobridge, once added the list of people will be displayed here.</i></p></li>
+            {% endif %}
+        </ul>
+        <br>
+        <p><a class="btn btn-primary" href="/launchpad/people/new"><b>&#43; Add a person</b></a></p>
+    </div>
+    <div class="col-md-6 themed-grid-col"></div>
+</div>
+{% endblock %}

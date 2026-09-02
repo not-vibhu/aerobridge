@@ -1,0 +1,55 @@
+{% extends "launchpad/layout.html" %}
+{% load rest_framework %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Trusted Flights
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Flight Permission Details
+      </li>
+    </ol>
+  </nav>
+<div class="row mb-3">
+    <h1>Permission Details</h1>
+    <p>Please find below the details of flight permission tokens provided by Aerobridge</p>
+    <br>
+</div>
+<div  class="row mb-3">
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr>
+            <td>Operation</td>
+            <td><a href="/launchpad/flightoperations/{{ flightpermission.operation.id }}/detail">{{ flightpermission.operation.name }}</a>
+            </td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td>
+                <button type="button" class="btn {% if flightpermission.status_code == 'granted' %}btn-outline-success{% elif flightpermission.status_code == 'pending'%}btn-outline-warning{% else %}btn-outline-danger{% endif %}" disabled>{{ flightpermission.status_code|upper }}</button>
+                </a>
+            </td>
+        </tr>        
+        <tr>
+            <td>Permission Token</td>
+            <td> 
+                <code class="text-break">{{ flightpermission.token|safe }}</code>                
+            </td>
+        </tr>    
+        <tr>
+            <td>Permission Geocage</td>
+            <td> 
+                <code class="text-break">{{ flightpermission.geo_cage }}</code>                
+            </td>
+        </tr>
+    </table>
+    <small class="text-muted">Created At - {{ flightpermission.created_at }}</small>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "launchpad/layout.html" %} 
+{% block navbreadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Trusted Flights
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Logs
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    
+    <h2>Flight Logs</h2>
+    <p>See all the raw and signed flight logs for your missions as a list or see them as a <i class="bi bi-calendar-date"></i>&nbsp;<a href="/launchpad/flightlogs/calendar">calendar</a></p></p>
+</div>
+<div class="row mb-3">
+    <div class="col-md-8 themed-grid-col">
+
+    <ul class="list-group list-group-flush list-group-numbered">
+        {% if flightlogs %}
+            {% for flightlog in flightlogs %}
+            <li class="list-group-item"><a href="/launchpad/flightlogs/{{flightlog.id}}/detail">{{ flightlog.operation.name }}</a>&nbsp;&nbsp;<small class="text-muted">&mdash; Last updated at {{ flightlog.created_at }}</small>&nbsp;&nbsp;{% if flightlog.is_editable %} <a href="/launchpad/flightlogs/{{flightlog.id}}/sign">Sign log</a> {% else %}<mark>Log Signed</mark> (<a href="/launchpad/signed-flightlogs">see details</a>){% endif %}</li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item"><p class="text-muted"><i>There are no flight logs added in Aerobridge, once added the list of flight logs will be displayed here.</i></p></li>
+        {% endif %}
+
+    </ul>
+    <br>
+    <p><a class="btn btn-primary" href="/launchpad/flightlogs/new"><b>&#43; Add a new flight log</b></a></p>
+
+</div>
+<div class="col-md-4 themed-grid-col"></div>
+</div>
+{% endblock %}

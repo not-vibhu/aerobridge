@@ -1,0 +1,17 @@
+{% extends "launchpad/layout.html" %}
+{% block content %}
+
+<div class="row mb-3">
+
+    {% if errors %}
+    <h2>Error in generation of permission</h2>
+    <br>
+    <p>{{ errors }}</p>
+    {% else %}
+    <h2>Permission object generated</h2>
+    <br>
+    <p>Your permission object has been issued, you can check Flights -> Permissions menu to see the permission details.</a></p>
+    {% endif %}
+</div>
+
+{% endblock %}

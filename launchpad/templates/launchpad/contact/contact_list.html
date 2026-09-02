@@ -1,0 +1,37 @@
+{% extends "launchpad/layout.html" %} {% block navbreadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        Operations
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Contacts
+      </li>
+    </ol>
+  </nav>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <h2>Contacts list</h2>
+    <p>See all the legal contacts for your operators as a list below</p>
+</div>
+<div class="row mb-3">      
+    <div class="col-md-8 themed-grid-col">
+
+        <ul class="list-group list-group-flush">
+        {% if contacts %}
+            {% for contact in contacts %}
+            <li class="list-group-item"><a href="/launchpad/contacts/{{contact.id}}/detail">{{ contact.person.first_name }} {{ contact.person.last_name }} &mdash; {{ contact.operator.company.common_name }}</a></li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item"><p class="text-muted"><i>There are no contacts added in Aerobridge, once added the list of contacts will be displayed here.</i></p></li>
+        {% endif %}
+
+    </ul>
+    <br>
+    <p><a class="btn btn-primary" href="/launchpad/contacts/new"><b>&#43; Add a new Contact</b></a></p>
+</div>
+<div class="col-md-4 themed-grid-col"></div>
+</div>
+{% endblock %}
